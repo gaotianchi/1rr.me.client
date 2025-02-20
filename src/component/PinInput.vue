@@ -1,5 +1,5 @@
 <template>
-  <div class="flex mb-2 space-x-2 rtl:space-x-reverse">
+  <div class="flex space-x-2 rtl:space-x-reverse">
     <div>
       <input v-model="value_1"
              type="text" aria-label="code-1" maxlength="1"
@@ -8,6 +8,7 @@
              class="outline-none block w-9 h-9 py-3 text-sm font-extrabold text-center text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
              required
              @input="focus(2)"
+             placeholder="P"
       />
     </div>
     <div>
@@ -18,6 +19,7 @@
              required
              @input="focus(3)"
              @keydown="handleDelete(1, $event)"
+             placeholder="A"
       />
     </div>
     <div>
@@ -27,6 +29,7 @@
              required
              @input="focus(4)"
              @keydown="handleDelete(2, $event)"
+             placeholder="S"
       />
     </div>
     <div>
@@ -35,6 +38,7 @@
              class="outline-none block w-9 h-9 py-3 text-sm font-extrabold text-center text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
              required
              @keydown="handleDelete(3, $event)"
+             placeholder="S"
       />
     </div>
   </div>
@@ -43,10 +47,7 @@
 <script setup lang="ts">
 import {ref, computed, watch} from 'vue';
 
-const model = defineModel('pin', {
-  type: String,
-  default: ''
-});
+const model = defineModel<string>()
 
 const value_1 = ref('');
 const value_2 = ref('');
@@ -62,6 +63,8 @@ const pin = computed(() => value_1.value + value_2.value + value_3.value + value
 
 watch(pin, () => {
   model.value = pin.value;
+
+  console.log(model.value)
 });
 
 let isDeleting = false;
@@ -96,7 +99,7 @@ const focus = (index: number) => {
         code_4.value?.focus();
         break;
     }
-  }, 300);
+  }, 100);
 };
 
 const handleDelete = (index: number, event: KeyboardEvent) => {
@@ -120,7 +123,7 @@ const handleDelete = (index: number, event: KeyboardEvent) => {
       }
 
       isDeleting = false;
-    }, 300);
+    }, 100);
   }
 };
 </script>

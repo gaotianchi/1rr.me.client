@@ -11,6 +11,7 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@primevue/themes": "^4.2.5",
     "@tailwindcss/vite": "^4.0.7",
     "gsap": "^3.12.7",
     "pinia": "^3.0.1",
