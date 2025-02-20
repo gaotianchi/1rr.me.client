@@ -5,9 +5,16 @@
         <input v-model="originalUrl" id="url-input" placeholder="原始链接" type="text" name="text" aria-label="text"
                class="w-[70%] h-12 px-4 rounded-full border-none outline-none border-gray-200 focus:border-gray-200 focus:ring-2 focus:ring-blue-300 transition-all duration-300 ease-in-out shadow-sm focus:shadow-lg hover:shadow-md active:scale-95">
       </div>
-      <div class="flex flex-row">
-        <ConverterButton @convert=""/>
-        <div class="flex flex-col">
+      <div class="flex flex-row w-full">
+        <div class="flex-1  flex flex-col-reverse items-center">
+
+        </div>
+
+        <div class="flex justify-center m-8">
+          <ConverterButton @convert=""/>
+        </div>
+
+        <div class="flex-1 flex flex-col-reverse">
           <div id="pin-password" class="configure mb-2">
             <div class="flex flex-row items-center">
               <span class="mr-2"><Key/></span>
@@ -25,6 +32,7 @@
           </div>
         </div>
       </div>
+
       <div class="flex flex-row">
 
       </div>
