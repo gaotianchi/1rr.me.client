@@ -37,7 +37,10 @@
 
       </div>
     </section>
-    <section id="dashboard" class="material-container"></section>
+    <section id="dashboard" class="material-container">
+      <Dashboard/>
+      <img src="/img.png" alt="img" class="w-full"/>
+    </section>
     <section id="manager" class="material-container"></section>
   </div>
 </template>
@@ -50,6 +53,7 @@ import Key from "@/component/icon/Key.vue";
 import Hourglass from "@/component/icon/Hourglass.vue";
 import {FloatLabel} from "primevue";
 import {DatePicker} from "primevue";
+import Dashboard from "@/component/Dashboard.vue";
 
 const pin = ref('');
 const expiredAt = ref(null);
