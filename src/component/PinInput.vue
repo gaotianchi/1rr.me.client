@@ -8,7 +8,6 @@
              class="outline-none block w-9 h-9 py-3 text-sm font-extrabold text-center text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
              required
              @input="focus(2)"
-
       />
     </div>
     <div>
@@ -18,6 +17,7 @@
              class="outline-none block w-9 h-9 py-3 text-sm font-extrabold text-center text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
              required
              @input="focus(3)"
+             @keydown="handleDelete(1, $event)"
       />
     </div>
     <div>
@@ -26,6 +26,7 @@
              class="outline-none block w-9 h-9 py-3 text-sm font-extrabold text-center text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
              required
              @input="focus(4)"
+             @keydown="handleDelete(2, $event)"
       />
     </div>
     <div>
@@ -33,6 +34,7 @@
              ref="code_4"
              class="outline-none block w-9 h-9 py-3 text-sm font-extrabold text-center text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
              required
+             @keydown="handleDelete(3, $event)"
       />
     </div>
   </div>
@@ -62,25 +64,65 @@ watch(pin, () => {
   model.value = pin.value;
 });
 
+let isDeleting = false;
+
 const focus = (index: number) => {
+  if (isDeleting) return;
+
   setTimeout(() => {
     switch (index) {
       case 1:
         code_1.value?.focus();
         break;
       case 2:
+        if (value_1.value === '') {
+          code_1.value?.focus();
+          return;
+        }
         code_2.value?.focus();
         break;
       case 3:
+        if (value_2.value === '') {
+          code_2.value?.focus();
+          return;
+        }
         code_3.value?.focus();
         break;
       case 4:
+        if (value_3.value === '') {
+          code_3.value?.focus();
+          return;
+        }
         code_4.value?.focus();
         break;
     }
-  }, 100);
+  }, 300);
 };
 
+const handleDelete = (index: number, event: KeyboardEvent) => {
+  if (event.key === 'Backspace' || event.key === 'Delete') {
+    isDeleting = true;
+
+    setTimeout(() => {
+      switch (index) {
+        case 1:
+          code_1.value?.focus();
+          break;
+        case 2:
+          code_2.value?.focus();
+          break;
+        case 3:
+          code_3.value?.focus();
+          break;
+        case 4:
+          code_4.value?.focus();
+          break;
+      }
+
+      isDeleting = false;
+    }, 300);
+  }
+};
 </script>
 
 <style scoped>
