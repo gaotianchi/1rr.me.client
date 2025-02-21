@@ -59,7 +59,7 @@
           <div class="flex flex-row items-center">
             <span title="设置过期时间" class="mr-2"><Hourglass/></span>
             <FloatLabel>
-              <DatePicker id="datepicker-24h" size="small" v-model="expiredAt" showTime hourFormat="24" fluid
+              <DatePicker id="datepicker-24h" size="small" v-model="expireAt" showTime hourFormat="24" fluid
                           placeholder="过期时间"/>
             </FloatLabel>
           </div>
@@ -79,20 +79,39 @@ import Key from "@/component/icon/Key.vue";
 import Hourglass from "@/component/icon/Hourglass.vue";
 import {ref} from "vue";
 import LoopOnce from "@/component/icon/LoopOnce.vue";
-import LinkService from "@/service/LinkService"
+import {useCurrentUserStore} from "@/store/currentUser";
+
+const currentUserStore = useCurrentUserStore();
+const user = currentUserStore.user;
 
 const pin = ref('');
-const expiredAt = ref(null);
+const expireAt = ref(null);
 const url = ref('');
 
 const status = ref(false)
 
-const linkService = new LinkService();
 
-const generateShortUrl = (originalUrl: string, pin: string, expiredAt: Date | null): string => {
-  const shortUrl = `https://short.url/${Math.random().toString(36).substring(2, 8)}`;
-  console.log('Generated short URL:', shortUrl);
-  return shortUrl;
+const generateShortUrl = async (originalUrl: string, pin: string, expiredAt: Date | null) => {
+
+  const response = await fetch('http://localhost:8088/links', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + user?.id_token,
+    },
+    body: JSON.stringify({
+      originalUrl: originalUrl,
+      password: pin,
+      expireAt: expiredAt
+    })
+  })
+  const location = response.headers.get('Location');
+  if (location) {
+    const code = location.split('=').pop();
+    url.value = "https://1rr.me/" + code;
+  } else {
+    throw new Error('短链接生成失败');
+  }
 };
 
 const copyShortUrl = (shortUrl: string): void => {
@@ -117,14 +136,12 @@ const handleMainButtonClick = () => {
       alert('请先生成短链接！');
     }
   } else {
-    if (!pin.value || !expiredAt.value) {
+    if (!pin.value || !expireAt.value) {
       console.error('PIN 或过期时间未填写');
       alert('请填写 PIN 和过期时间！');
       return;
     }
-    const shortUrl = generateShortUrl(url.value, pin.value, expiredAt.value);
-    url.value = shortUrl; // 更新生成的短链接
-    status.value = true; // 更新状态为 true
+    const shortUrl = generateShortUrl(url.value, pin.value, expireAt.value);
     console.log('Short URL generated:', shortUrl);
     alert('短链接已生成！');
   }

@@ -1,5 +1,5 @@
 import {providersConfig} from "@/config/oidcConfig.ts";
-import {UserManager} from "oidc-client-ts";
+import {type User, UserManager} from "oidc-client-ts";
 
 export default class AuthService {
     private userManager: UserManager;
@@ -12,9 +12,10 @@ export default class AuthService {
         this.userManager = new UserManager(config);
     }
 
-    async login() {
+    async login(): Promise<User | null>{
         try {
             await this.userManager.signinRedirect();
+            return await this.userManager.getUser();
         } catch (error) {
             console.error(`登录失败: ${error}`);
             throw error;

@@ -18,10 +18,16 @@
 
         <div class="hidden sm:flex sm:items-center">
 
-          <RouterLink :to="{
+          <RouterLink v-if="!user" :to="{
               name: 'AUTH'
-            }" class="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-purple-600 hover:border-purple-600">Sign in
+            }"
+                      class="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-purple-600 hover:border-purple-600">
+            Sign in
           </RouterLink>
+          <div v-else
+               class="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-purple-600 hover:border-purple-600">
+            {{ user.profile.name }}
+          </div>
         </div>
 
         <div class="sm:hidden cursor-pointer">
@@ -39,9 +45,12 @@
           <a href="#" class="text-gray-800 text-sm font-semibold hover:text-purple-600 mb-1">Partners</a>
           <a href="#" class="text-gray-800 text-sm font-semibold hover:text-purple-600 mb-1">Pricing</a>
           <div class="flex justify-between items-center border-t-2 pt-2">
-            <a href="#" class="text-gray-800 text-sm font-semibold hover:text-purple-600 mr-4">
+            <RouterLink :to="{
+              name: 'AUTH'
+            }"
+                        class="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-purple-600 hover:border-purple-600">
               Sign in
-            </a>
+            </RouterLink>
             <a href="#"
                class="text-gray-800 text-sm font-semibold border px-4 py-1 rounded-lg hover:text-purple-600 hover:border-purple-600">Sign
               up</a>
@@ -55,6 +64,13 @@
 
 <script setup lang="ts">
 import {RouterLink} from "vue-router";
+import {useCurrentUserStore} from '@/store/currentUser'
+
+const currentUserStore = useCurrentUserStore()
+const user =  currentUserStore.user;
+
+console.log(user);
+
 
 </script>
 

@@ -19,6 +19,7 @@
 
 import {onMounted} from "vue";
 import AuthService from "../service/AuthService.ts";
+import {useCurrentUserStore} from '@/store/currentUser'
 
 const props = defineProps({
   provider: {
@@ -27,10 +28,31 @@ const props = defineProps({
   }
 })
 
-onMounted(() => {
+const currentUserStore = useCurrentUserStore()
+
+onMounted(async () => {
   const authService = new AuthService(props.provider)
-  authService.handleRedirectCallback().then(() => {
-    window.location.href = "/"
+  authService.handleRedirectCallback().then(async () => {
+
+    const currentUser = await authService.getUser();
+
+    const response = await fetch("http://localhost:8088/api/users", {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        username: currentUser?.profile.name,
+        useThirdPartyLogin: 1,
+        email: currentUser?.profile.email,
+      })
+    })
+
+    if (response.status == 201) {
+      currentUserStore.setUser(currentUser)
+      window.location.href = "/"
+    }
+
   })
 })
 
