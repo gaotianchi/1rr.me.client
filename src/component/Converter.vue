@@ -1,7 +1,7 @@
 <template>
   <section id="converter" class="material-container">
     <div class="flex flex-row justify-center">
-      <input v-model="originalUrl" id="url-input" placeholder="原始链接" type="text" name="text" aria-label="text"
+      <input v-model="url" id="url-input" placeholder="原始链接" type="text" name="text" aria-label="text"
              :class="{'w-200': !status, 'w-60': status}"
              class="w-24 h-12 px-4 rounded-full border-none outline-none border-gray-200
                 focus:border-gray-200 focus:ring-2 focus:ring-blue-300
@@ -82,10 +82,50 @@ import LoopOnce from "@/component/icon/LoopOnce.vue";
 
 const pin = ref('');
 const expiredAt = ref(null);
-const originalUrl = ref('');
+const url = ref('');
 
 const status = ref(false)
 
+const generateShortUrl = (originalUrl: string, pin: string, expiredAt: Date | null): string => {
+  const shortUrl = `https://short.url/${Math.random().toString(36).substring(2, 8)}`;
+  console.log('Generated short URL:', shortUrl);
+  return shortUrl;
+};
+
+const copyShortUrl = (shortUrl: string): void => {
+  navigator.clipboard.writeText(shortUrl)
+      .then(() => {
+        console.log('Short URL copied to clipboard:', shortUrl);
+        alert('短链接已复制到剪贴板！');
+      })
+      .catch((err) => {
+        console.error('Failed to copy short URL:', err);
+        alert('复制失败，请手动复制链接。');
+      });
+};
+
+const handleMainButtonClick = () => {
+  if (status.value) {
+    // 如果状态为 true，执行复制短链接操作
+    if (url.value) {
+      copyShortUrl(url.value);
+    } else {
+      console.error('短链接未生成，无法复制');
+      alert('请先生成短链接！');
+    }
+  } else {
+    if (!pin.value || !expiredAt.value) {
+      console.error('PIN 或过期时间未填写');
+      alert('请填写 PIN 和过期时间！');
+      return;
+    }
+    const shortUrl = generateShortUrl(url.value, pin.value, expiredAt.value);
+    url.value = shortUrl; // 更新生成的短链接
+    status.value = true; // 更新状态为 true
+    console.log('Short URL generated:', shortUrl);
+    alert('短链接已生成！');
+  }
+};
 
 </script>
 
