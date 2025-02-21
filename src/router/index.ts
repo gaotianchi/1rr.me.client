@@ -14,7 +14,8 @@ const router = createRouter({
             component: () => import('@/page/Auth.vue')
         },
         {
-            path: '/callback',
+            path: '/callback/:provider',
+            props: true,
             component: () => import('@/page/Callback.vue')
         },
         {

@@ -20,9 +20,15 @@
 import {onMounted} from "vue";
 import AuthService from "../service/AuthService.ts";
 
+const props = defineProps({
+  provider: {
+    type: String,
+    required: true
+  }
+})
 
 onMounted(() => {
-  const authService = new AuthService("google")
+  const authService = new AuthService(props.provider)
   authService.handleRedirectCallback().then(() => {
     window.location.href = "/"
   })

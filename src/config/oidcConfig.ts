@@ -11,5 +11,4 @@ export const providersConfig: Record<string, UserManagerSettings> = {
         scope: 'openid profile email',
         loadUserInfo: true,
     }
-    // 更多提供者
 };

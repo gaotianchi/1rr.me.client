@@ -79,12 +79,15 @@ import Key from "@/component/icon/Key.vue";
 import Hourglass from "@/component/icon/Hourglass.vue";
 import {ref} from "vue";
 import LoopOnce from "@/component/icon/LoopOnce.vue";
+import LinkService from "@/service/LinkService"
 
 const pin = ref('');
 const expiredAt = ref(null);
 const url = ref('');
 
 const status = ref(false)
+
+const linkService = new LinkService();
 
 const generateShortUrl = (originalUrl: string, pin: string, expiredAt: Date | null): string => {
   const shortUrl = `https://short.url/${Math.random().toString(36).substring(2, 8)}`;
