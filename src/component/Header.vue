@@ -39,7 +39,9 @@
           <a href="#" class="text-gray-800 text-sm font-semibold hover:text-purple-600 mb-1">Partners</a>
           <a href="#" class="text-gray-800 text-sm font-semibold hover:text-purple-600 mb-1">Pricing</a>
           <div class="flex justify-between items-center border-t-2 pt-2">
-            <a href="#" class="text-gray-800 text-sm font-semibold hover:text-purple-600 mr-4">Sign in</a>
+            <a href="#" class="text-gray-800 text-sm font-semibold hover:text-purple-600 mr-4">
+              Sign in
+            </a>
             <a href="#"
                class="text-gray-800 text-sm font-semibold border px-4 py-1 rounded-lg hover:text-purple-600 hover:border-purple-600">Sign
               up</a>
@@ -53,6 +55,7 @@
 
 <script setup lang="ts">
 import {RouterLink} from "vue-router";
+
 </script>
 
 <style scoped>

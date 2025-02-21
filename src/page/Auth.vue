@@ -57,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import AuthService from "../service/authService";
+import AuthService from "../service/AuthService.ts";
 
 const googleAuth = new AuthService("google");
 

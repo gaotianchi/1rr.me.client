@@ -18,7 +18,7 @@
 <script setup lang="ts">
 
 import {onMounted} from "vue";
-import AuthService from "../service/authService.ts";
+import AuthService from "../service/AuthService.ts";
 
 
 onMounted(() => {
