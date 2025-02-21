@@ -17,6 +17,17 @@
 
 <script setup lang="ts">
 
+import {onMounted} from "vue";
+import AuthService from "../service/authService.ts";
+
+
+onMounted(() => {
+  const authService = new AuthService("google")
+  authService.handleRedirectCallback().then(() => {
+    window.location.href = "/"
+  })
+})
+
 </script>
 
 <style scoped>
