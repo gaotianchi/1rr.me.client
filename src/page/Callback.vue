@@ -18,8 +18,10 @@
 <script setup lang="ts">
 
 import {onMounted} from "vue";
-import AuthService from "../service/AuthService.ts";
-import {useCurrentUserStore} from '@/store/currentUser'
+import AuthService from "@/service/AuthService.ts";
+import type {UserDto} from "@/interface/UserDto.ts";
+import {registerUserInfo} from "@/service/UserService.ts";
+import {useUserStore} from "@/store/useUserStore.ts";
 
 const props = defineProps({
   provider: {
@@ -28,32 +30,26 @@ const props = defineProps({
   }
 })
 
-const currentUserStore = useCurrentUserStore()
-
 onMounted(async () => {
+
+  // 1. 处理回调，获取当前用户信息
   const authService = new AuthService(props.provider)
-  authService.handleRedirectCallback().then(async () => {
+  const user = await authService.handleRedirectCallback()
 
-    const currentUser = await authService.getUser();
+  // 2. 将用户信息登记到资源服务器中
+  const registerUserDto: UserDto = {
+    username: user?.profile.name,
+    useThirdPartyLogin: 1,
+    email: user?.profile.email,
+  }
+  await registerUserInfo(registerUserDto);
 
-    const response = await fetch("http://localhost:8088/api/users", {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify({
-        username: currentUser?.profile.name,
-        useThirdPartyLogin: 1,
-        email: currentUser?.profile.email,
-      })
-    })
+  // 3. 将用户数据持久化到用户仓库
+  const userStore = useUserStore()
+  userStore.setUser(user)
 
-    if (response.status == 201) {
-      currentUserStore.setUser(currentUser)
-      window.location.href = "/"
-    }
-
-  })
+  // 4. 跳转到首页
+  window.location.href = "/"
 })
 
 </script>
