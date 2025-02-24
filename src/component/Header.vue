@@ -64,13 +64,10 @@
 
 <script setup lang="ts">
 import {RouterLink} from "vue-router";
-import {useCurrentUserStore} from '@/store/currentUser'
 
-const currentUserStore = useCurrentUserStore()
-const user =  currentUserStore.user;
+import {useUserStore} from "@/store/useUserStore.ts";
 
-console.log(user);
-
+const user = useUserStore().user;
 
 </script>
 
