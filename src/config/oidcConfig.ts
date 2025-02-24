@@ -1,11 +1,11 @@
-import { type UserManagerSettings } from 'oidc-client-ts';
+import {type UserManagerSettings} from 'oidc-client-ts';
 
 
 export const providersConfig: Record<string, UserManagerSettings> = {
     google: {
         authority: 'https://accounts.google.com',
-        client_id: '740215658195-pe06a3so364eturh150q9hk1gdkucp60.apps.googleusercontent.com',
-        client_secret: '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',
+        client_id: import.meta.env.VITE_APP_GOOGLE_CLIENT_ID,
+        client_secret: import.meta.env.VITE_APP_GOOGLE_CLIENT_SECRET,
         redirect_uri: 'http://localhost:5173/callback/google',
         post_logout_redirect_uri: 'http://localhost:5173',
         scope: 'openid profile email',
