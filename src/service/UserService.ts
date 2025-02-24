@@ -1,8 +1,8 @@
-import type {UserDto} from "@/interface/UserDto.ts";
+import type {UserRequest} from "@/request/UserRequest.ts";
 
 const baseUrl = import.meta.env.VITE_APP_RESOURCE_BASE_URL;
 
-export async function registerUserInfo(registerUserDto: UserDto) {
+export async function registerUserInfo(registerUserDto: UserRequest) {
     const response = await fetch(
         baseUrl + '/api/users',
         {

@@ -17,7 +17,7 @@
           <button
               :title="status ? '复制短链接' : '生成短链接'"
               id="generate-copy"
-              @click="status = true"
+              @click="handleConverterButton()"
               :class="{
         'w-72 h-72 bg-gradient-to-r from-red-600 to-orange-500': !status,
         'w-35 h-35 bg-gradient-to-r from-green-600 to-blue-500': status
@@ -68,6 +68,7 @@
     </div>
     <div class="flex flex-row">
     </div>
+    <Toast/>
   </section>
 </template>
 
@@ -79,73 +80,48 @@ import Key from "@/component/icon/Key.vue";
 import Hourglass from "@/component/icon/Hourglass.vue";
 import {ref} from "vue";
 import LoopOnce from "@/component/icon/LoopOnce.vue";
-import {useCurrentUserStore} from "@/store/currentUser";
-
-const currentUserStore = useCurrentUserStore();
-const user = currentUserStore.user;
-
-const pin = ref('');
-const expireAt = ref(null);
-const url = ref('');
-
-const status = ref(false)
+import type {PostShortLinkRequest} from "@/request/LinkRequest.ts";
+import type {ShortLinkResponse} from "@/response/LinkResponse.ts";
+import Toast from 'primevue/toast';
+import {useToast} from 'primevue/usetoast';
+import {getShortLink} from "@/service/LinkServcie.ts";
 
 
-const generateShortUrl = async (originalUrl: string, pin: string, expiredAt: Date | null) => {
+const pin = ref<string>('');
+const expireAt = ref<Date | null>(null);
+const url = ref<string>('');
+const status = ref<boolean>(false)
 
-  const response = await fetch('http://localhost:8088/links', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + user?.id_token,
-    },
-    body: JSON.stringify({
-      originalUrl: originalUrl,
-      password: pin,
-      expireAt: expiredAt
-    })
-  })
-  const location = response.headers.get('Location');
-  if (location) {
-    const code = location.split('=').pop();
-    url.value = "https://1rr.me/" + code;
-  } else {
-    throw new Error('短链接生成失败');
-  }
-};
+const toast = useToast();
 
-const copyShortUrl = (shortUrl: string): void => {
-  navigator.clipboard.writeText(shortUrl)
-      .then(() => {
-        console.log('Short URL copied to clipboard:', shortUrl);
-        alert('短链接已复制到剪贴板！');
-      })
-      .catch((err) => {
-        console.error('Failed to copy short URL:', err);
-        alert('复制失败，请手动复制链接。');
-      });
-};
-
-const handleMainButtonClick = () => {
-  if (status.value) {
-    // 如果状态为 true，执行复制短链接操作
-    if (url.value) {
-      copyShortUrl(url.value);
-    } else {
-      console.error('短链接未生成，无法复制');
-      alert('请先生成短链接！');
+const handleConverterButton = async (): Promise<void> => {
+  if (!status.value) {
+    // 1. 当前的状态是“生成短链接”
+    const postShortLinkRequest: PostShortLinkRequest = {
+      originalUrl: url.value,
+      password: pin.value,
+      expireAt: expireAt.value
     }
-  } else {
-    if (!pin.value || !expireAt.value) {
-      console.error('PIN 或过期时间未填写');
-      alert('请填写 PIN 和过期时间！');
+    try {
+      const shortLinkResponse: ShortLinkResponse = await getShortLink(postShortLinkRequest);
+      url.value = `${import.meta.env.BASE_URL}/${shortLinkResponse.code}`;
+      status.value = true;
+    } catch (error) {
+      toast.add({severity: 'error', summary: '错误', detail: '请输入有效的原始链接。', life: 3000});
       return;
     }
-    const shortUrl = generateShortUrl(url.value, pin.value, expireAt.value);
-    console.log('Short URL generated:', shortUrl);
-    alert('短链接已生成！');
+  } else {
+    // 2. 当前的动作是“复制”
+    navigator.clipboard.writeText(url.value)
+        .then(() => {
+          toast.add({severity: 'success', summary: '复制成功', detail: '短链接已复制到剪贴板！', life: 3000});
+        })
+        .catch((err) => {
+          toast.add({severity: 'error', summary: '复制失败', detail: '请手动复制链接。', life: 3000});
+        });
   }
-};
+}
+
 
 </script>
 
