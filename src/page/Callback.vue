@@ -38,8 +38,9 @@ onMounted(async () => {
 
   // 2. 将用户信息登记到资源服务器中
   const registerUserDto: UserDto = {
-    username: user?.profile.name,
+    username: user?.profile.sub,
     useThirdPartyLogin: 1,
+    emailIsVerified: 1,
     email: user?.profile.email,
   }
   await registerUserInfo(registerUserDto);

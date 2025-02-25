@@ -3,4 +3,5 @@ export interface UserDto {
     password?: string;
     email?: string;
     useThirdPartyLogin?: number;
+    emailIsVerified?: number;
 }
