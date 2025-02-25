@@ -1,7 +1,9 @@
 <template>
   <section id="converter" class="material-container">
     <div class="flex flex-row justify-center">
-      <input v-model="url" id="url-input" placeholder="原始链接" type="text" name="text" aria-label="text"
+      <input id="url-input" v-model="url" :disabled="status"
+             :placeholder="status ? 'https://1rr.me/kKDOdk' : 'https://looooooooooooooooooooooooooooooonooooooooooooooooooooooooooooogurl.com'"
+             aria-label="text" name="text" type="text"
              :class="{'w-200': !status, 'w-50': status}"
              class="w-24 h-12 px-4 rounded-full border-none outline-none border-gray-200
                 focus:border-gray-200 focus:ring-2 focus:ring-blue-300
@@ -9,9 +11,12 @@
                 shadow-sm focus:shadow-lg hover:shadow-md active:scale-95">
     </div>
     <div class="flex flex-row w-full">
+
+      <!--左侧-->
       <div class="flex-1  flex flex-col-reverse items-center">
       </div>
 
+      <!--中间的主按钮-->
       <div class="flex justify-center m-8">
         <div class="flex flex-col items-center justify-center h-full relative">
           <button
@@ -43,30 +48,64 @@
         </div>
       </div>
 
+      <!--右侧表单和展示-->
       <div class="flex-1 flex flex-col-reverse">
-        <div id="pin-password"
-             class="configure mb-2 transition-opacity duration-300 ease-in-out"
-             :class="{'opacity-0': status, 'opacity-100': !status}">
-          <div class="flex flex-row items-center">
-            <span title="设置 PIN 密码" class="mr-2"><Key/></span>
-            <PinInput v-model="pin"/>
-          </div>
-        </div>
 
-        <div id="expire-date"
-             class="configure mb-2 transition-opacity duration-300 ease-in-out"
-             :class="{'opacity-0': status, 'opacity-100': !status}">
-          <div class="flex flex-row items-center">
-            <span title="设置过期时间" class="mr-2"><Hourglass/></span>
-            <FloatLabel>
-              <DatePicker id="datepicker-24h" size="small" v-model="expireAt" showTime hourFormat="24" fluid
-                          placeholder="过期时间"/>
-            </FloatLabel>
+        <!-- 转化结果 -->
+        <transition name="fade">
+          <div v-if="status" class="flex flex-col">
+
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center space-x-2">
+                <i class="pi pi-calendar text-xl text-gray-600"></i>
+                <span class="text-sm text-gray-700">2025/02/04</span>
+              </div>
+              <i
+                  class="pi pi-copy text-xl text-gray-500 cursor-pointer"
+                  @click=""
+              ></i>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <i class="pi pi-lock text-xl text-gray-600"></i>
+                <span class="text-sm text-gray-700">1234</span>
+              </div>
+              <i
+                  class="pi pi-copy text-xl text-gray-500 cursor-pointer"
+                  @click=""
+              ></i>
+            </div>
+
           </div>
-        </div>
+        </transition>
+
+        <!-- 有效日期以及密码表单-->
+        <transition name="fade">
+          <div v-if="!status" class="flex flex-col">
+            <div id="expire-date"
+                 :class="{'opacity-0': status, 'opacity-100': !status}"
+                 class="configure mb-2 transition-opacity duration-300 ease-in-out">
+              <div class="flex flex-row items-center">
+                <span class="mr-2" title="设置过期时间"><Hourglass/></span>
+                <FloatLabel>
+                  <DatePicker id="datepicker-24h" v-model="expireAt" fluid hourFormat="24" placeholder="过期时间" showTime
+                              size="small"/>
+                </FloatLabel>
+              </div>
+            </div>
+            <div id="pin-password"
+                 :class="{'opacity-0': status, 'opacity-100': !status}"
+                 class="configure mb-2 transition-opacity duration-300 ease-in-out">
+              <div class="flex flex-row items-center">
+                <span class="mr-2" title="设置 PIN 密码"><Key/></span>
+                <PinInput v-model="pin"/>
+              </div>
+            </div>
+          </div>
+        </transition>
       </div>
-    </div>
-    <div class="flex flex-row">
+
     </div>
     <Toast/>
   </section>
@@ -90,7 +129,7 @@ import {getShortLink} from "@/service/LinkServcie.ts";
 const pin = ref<string>('');
 const expireAt = ref<Date | null>(null);
 const url = ref<string>('');
-const status = ref<boolean>(false)
+const status = ref<boolean>(true)
 
 const toast = useToast();
 
@@ -143,5 +182,13 @@ const handleConverterButton = async (): Promise<void> => {
 
 .ring-animation {
   animation: ring 1.5s infinite;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s ease-in-out;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>
