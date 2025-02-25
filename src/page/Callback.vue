@@ -19,7 +19,6 @@
 
 import {onMounted} from "vue";
 import AuthService from "@/service/AuthService.ts";
-import type {UserDto} from "@/interface/UserDto.ts";
 import {registerUserInfo} from "@/service/UserService.ts";
 import {useUserStore} from "@/store/useUserStore.ts";
 
@@ -37,7 +36,7 @@ onMounted(async () => {
   const user = await authService.handleRedirectCallback()
 
   // 2. 将用户信息登记到资源服务器中
-  const registerUserDto: UserDto = {
+  const registerUserDto = {
     username: user?.profile.sub,
     useThirdPartyLogin: 1,
     emailIsVerified: 1,

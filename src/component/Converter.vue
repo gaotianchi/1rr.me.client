@@ -2,7 +2,7 @@
   <section id="converter" class="material-container">
     <div class="flex flex-row justify-center">
       <input v-model="url" id="url-input" placeholder="原始链接" type="text" name="text" aria-label="text"
-             :class="{'w-200': !status, 'w-60': status}"
+             :class="{'w-200': !status, 'w-50': status}"
              class="w-24 h-12 px-4 rounded-full border-none outline-none border-gray-200
                 focus:border-gray-200 focus:ring-2 focus:ring-blue-300
                 transition-all duration-300 ease-in-out
@@ -104,10 +104,11 @@ const handleConverterButton = async (): Promise<void> => {
     }
     try {
       const shortLinkResponse: ShortLinkResponse = await getShortLink(postShortLinkRequest);
-      url.value = `${import.meta.env.BASE_URL}/${shortLinkResponse.code}`;
+      url.value = `https://1rr.me/${shortLinkResponse.code}`;
       status.value = true;
+      toast.add({severity: 'success', summary: '短链接创建成功！', life: 3000});
     } catch (error) {
-      toast.add({severity: 'error', summary: '错误', detail: '请输入有效的原始链接。', life: 3000});
+      toast.add({severity: 'error', summary: '错误', detail: error, life: 3000});
       return;
     }
   } else {
@@ -116,7 +117,7 @@ const handleConverterButton = async (): Promise<void> => {
         .then(() => {
           toast.add({severity: 'success', summary: '复制成功', detail: '短链接已复制到剪贴板！', life: 3000});
         })
-        .catch((err) => {
+        .catch(() => {
           toast.add({severity: 'error', summary: '复制失败', detail: '请手动复制链接。', life: 3000});
         });
   }

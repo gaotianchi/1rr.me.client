@@ -16,6 +16,10 @@ export const getShortLink = async (postShortLinkRequest: PostShortLinkRequest): 
             }
         }
     )
+    if (createShortLinkResponse.status === 409) {
+        throw new Error("短链接已存在！");
+    }
+
     if (createShortLinkResponse.status !== 201) {
         throw new Error("创建短链接失败！");
     }
