@@ -5,24 +5,24 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            name: 'home',
+            name: 'HOME',
             component: () => import('@/page/Home.vue'),
         },
         {
             path: '/auth',
+            name: 'AUTH',
             component: () => import('@/page/Auth.vue')
         },
         {
-            path: '/callback',
+            path: '/callback/:provider',
+            name: 'CALLBACK',
+            props: true,
             component: () => import('@/page/Callback.vue')
         },
         {
             path: '/:pathMatch(.*)*',
+            name: 'NOTFOUND',
             component: () => import('@/page/NotFound.vue')
-        },
-        {
-            path: '/core',
-            component:() => import('@/page/Core.vue')
         }
     ],
 })

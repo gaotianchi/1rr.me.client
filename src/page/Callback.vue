@@ -17,6 +17,41 @@
 
 <script setup lang="ts">
 
+import {onMounted} from "vue";
+import AuthService from "@/service/AuthService.ts";
+import {registerUserInfo} from "@/service/UserService.ts";
+import {useUserStore} from "@/store/useUserStore.ts";
+
+const props = defineProps({
+  provider: {
+    type: String,
+    required: true
+  }
+})
+
+onMounted(async () => {
+
+  // 1. 处理回调，获取当前用户信息
+  const authService = new AuthService(props.provider)
+  const user = await authService.handleRedirectCallback()
+
+  // 2. 将用户信息登记到资源服务器中
+  const registerUserDto = {
+    username: user?.profile.sub,
+    useThirdPartyLogin: 1,
+    emailIsVerified: 1,
+    email: user?.profile.email,
+  }
+  await registerUserInfo(registerUserDto);
+
+  // 3. 将用户数据持久化到用户仓库
+  const userStore = useUserStore()
+  userStore.setUser(user)
+
+  // 4. 跳转到首页
+  window.location.href = "/"
+})
+
 </script>
 
 <style scoped>
